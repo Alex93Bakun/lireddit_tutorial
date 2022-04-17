@@ -26,6 +26,7 @@ export type Mutation = {
   createPost: Post;
   deletePost: Scalars['Boolean'];
   login: UserResponse;
+  logout: Scalars['Boolean'];
   register: UserResponse;
   updatePost?: Maybe<Post>;
 };
