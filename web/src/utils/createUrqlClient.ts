@@ -1,26 +1,18 @@
-import { ChakraProvider, ColorModeProvider } from "@chakra-ui/react";
-import { createClient, dedupExchange, fetchExchange, Provider } from "urql";
+import { dedupExchange, fetchExchange } from "urql";
+import { cacheExchange } from "@urql/exchange-graphcache";
 import {
-  Cache,
-  cacheExchange,
-  query,
-  QueryInput,
-} from "@urql/exchange-graphcache";
-import {
-  LoginMutation,
   LogoutMutation,
-  MeDocument,
   MeQuery,
+  MeDocument,
+  LoginMutation,
   RegisterMutation,
 } from "../generated/graphql";
+import { betterUpdateQuery } from "./betterUpdateQuery";
 
-import theme from "../theme";
-import { betterUpdateQuery } from "../utils/betterUpdateQuery";
-
-const client = createClient({
+export const createUrqlClient = (ssrExchange: any) => ({
   url: "http://localhost:4000/graphql",
   fetchOptions: {
-    credentials: "include",
+    credentials: "include" as const,
   },
   exchanges: [
     dedupExchange,
@@ -32,10 +24,9 @@ const client = createClient({
               cache,
               { query: MeDocument },
               _result,
-              (result, query) => ({ me: null })
+              () => ({ me: null })
             );
           },
-
           login: (_result, args, cache, info) => {
             betterUpdateQuery<LoginMutation, MeQuery>(
               cache,
@@ -52,7 +43,6 @@ const client = createClient({
               }
             );
           },
-
           register: (_result, args, cache, info) => {
             betterUpdateQuery<RegisterMutation, MeQuery>(
               cache,
@@ -72,24 +62,7 @@ const client = createClient({
         },
       },
     }),
+    ssrExchange,
     fetchExchange,
   ],
 });
-
-function MyApp({ Component, pageProps }) {
-  return (
-    <Provider value={client}>
-      <ChakraProvider resetCSS theme={theme}>
-        <ColorModeProvider
-          options={{
-            useSystemColorMode: true,
-          }}
-        >
-          <Component {...pageProps} />
-        </ColorModeProvider>
-      </ChakraProvider>
-    </Provider>
-  );
-}
-
-export default MyApp;
