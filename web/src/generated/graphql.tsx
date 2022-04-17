@@ -95,6 +95,31 @@ export type UsernamePasswordInput = {
   username: Scalars["String"];
 };
 
+export type LoginMutationVariables = Exact<{
+  username: Scalars["String"];
+  password: Scalars["String"];
+}>;
+
+export type LoginMutation = {
+  __typename?: "Mutation";
+  login: {
+    __typename?: "UserResponse";
+    errors?: Array<{
+      __typename?: "FieldError";
+      field: string;
+      message: string;
+    }> | null;
+    user?: {
+      __typename?: "User";
+      id: number;
+      username: string;
+      password: string;
+      createdAt: string;
+      updatedAt: string;
+    } | null;
+  };
+};
+
 export type RegisterMutationVariables = Exact<{
   username: Scalars["String"];
   password: Scalars["String"];
@@ -113,6 +138,34 @@ export type RegisterMutation = {
   };
 };
 
+export type MeQueryVariables = Exact<{ [key: string]: never }>;
+
+export type MeQuery = {
+  __typename?: "Query";
+  me?: { __typename?: "User"; id: number; username: string } | null;
+};
+
+export const LoginDocument = gql`
+  mutation Login($username: String!, $password: String!) {
+    login(options: { username: $username, password: $password }) {
+      errors {
+        field
+        message
+      }
+      user {
+        id
+        username
+        password
+        createdAt
+        updatedAt
+      }
+    }
+  }
+`;
+
+export function useLoginMutation() {
+  return Urql.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument);
+}
 export const RegisterDocument = gql`
   mutation Register($username: String!, $password: String!) {
     register(options: { username: $username, password: $password }) {
@@ -132,4 +185,18 @@ export function useRegisterMutation() {
   return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(
     RegisterDocument
   );
+}
+export const MeDocument = gql`
+  query Me {
+    me {
+      id
+      username
+    }
+  }
+`;
+
+export function useMeQuery(
+  options?: Omit<Urql.UseQueryArgs<MeQueryVariables>, "query">
+) {
+  return Urql.useQuery<MeQuery>({ query: MeDocument, ...options });
 }
