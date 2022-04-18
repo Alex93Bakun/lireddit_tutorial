@@ -1,26 +1,35 @@
-import React, {InputHTMLAttributes} from "react";
-import {FormControl, FormErrorMessage, FormLabel, Input,} from "@chakra-ui/react";
-import {useField} from "formik";
+import React, { InputHTMLAttributes } from "react";
+import { useField } from "formik";
+import {
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Input,
+  Textarea,
+} from "@chakra-ui/react";
 
-type TInputFieldProps = InputHTMLAttributes<HTMLInputElement> & {
-  name: string;
+type InputFieldProps = InputHTMLAttributes<HTMLInputElement> & {
   label: string;
-  placeholder?: string;
-  type?: string;
+  name: string;
+  textarea?: boolean;
 };
 
-const InputField: React.FC<TInputFieldProps> = (props) => {
+const InputField: React.FC<InputFieldProps> = ({
+  label,
+  textarea,
+  size: _,
+  ...props
+}) => {
+  let InputOrTextarea = Input;
+  if (textarea) {
+    InputOrTextarea = Textarea as any;
+  }
   const [field, { error }] = useField(props);
   return (
     <FormControl isInvalid={!!error}>
-      <FormLabel htmlFor={field.name}>{props.label}</FormLabel>
-      <Input
-        {...field}
-        id={field.name}
-        placeholder={props.placeholder ?? ""}
-        type={props.type ?? "text"}
-      />
-      {error && <FormErrorMessage>{error}</FormErrorMessage>}
+      <FormLabel htmlFor={field.name}>{label}</FormLabel>
+      <InputOrTextarea {...field} {...props} id={field.name} />
+      {error ? <FormErrorMessage>{error}</FormErrorMessage> : null}
     </FormControl>
   );
 };

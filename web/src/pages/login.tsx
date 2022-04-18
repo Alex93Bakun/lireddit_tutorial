@@ -32,15 +32,15 @@ const Login: React.FC<{}> = ({}) => {
         {({ isSubmitting }) => (
           <Form>
             <InputField
-              label="Username Or Email"
               name="usernameOrEmail"
               placeholder="username or email"
+              label="Username or Email"
             />
             <Box mt={4}>
               <InputField
-                label="Password"
                 name="password"
                 placeholder="password"
+                label="Password"
                 type="password"
               />
             </Box>
