@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { withUrqlClient } from "next-urql";
 import Link from "next/link";
 import {
@@ -16,10 +17,12 @@ import { usePostsQuery } from "../generated/graphql";
 import Layout from "../components/Layout";
 
 const Index = () => {
+  const [variables, setVariables] = useState({
+    limit: 10,
+    cursor: null as null | string,
+  });
   const [{ data, fetching }] = usePostsQuery({
-    variables: {
-      limit: 10,
-    },
+    variables,
   });
 
   if (!fetching && !data) {
@@ -49,7 +52,16 @@ const Index = () => {
       )}
       {data ? (
         <Flex justifyContent="center">
-          <Button isLoading={fetching} my={8}>
+          <Button
+            isLoading={fetching}
+            my={8}
+            onClick={() =>
+              setVariables({
+                limit: variables.limit,
+                cursor: data.posts[data.posts.length - 1].createdAt,
+              })
+            }
+          >
             load more
           </Button>
         </Flex>
