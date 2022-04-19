@@ -22,12 +22,12 @@ const NavBar: React.FC<INavBarProps> = ({}) => {
     body = (
       <>
         <Link href="/login">
-          <ChakraLink color="white" mr={2}>
+          <ChakraLink color="white" mr={2} fontSize="1.2rem">
             login
           </ChakraLink>
         </Link>
         <Link href="/register">
-          <ChakraLink color="white">register</ChakraLink>
+          <ChakraLink color="white" fontSize="1.2rem">register</ChakraLink>
         </Link>
       </>
     );
@@ -54,8 +54,15 @@ const NavBar: React.FC<INavBarProps> = ({}) => {
   }
 
   return (
-    <Flex bg="tomato" p={4}>
-      <Box ml="auto">{body}</Box>
+    <Flex
+      bg="tomato"
+      minH="61px"
+      alignItems="center"
+      position="sticky"
+      top={0}
+      zIndex={10}
+    >
+      <Box ml="auto" mr={4}>{body}</Box>
     </Flex>
   );
 };

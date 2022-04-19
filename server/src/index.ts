@@ -16,6 +16,7 @@ import { User } from "./entities/User";
 import { HelloResolver } from "./resolvers/hello";
 import { PostResolver } from "./resolvers/post";
 import { UserResolver } from "./resolvers/user";
+import path from "path";
 
 export const connection = new DataSource({
   type: "postgres",
@@ -24,11 +25,14 @@ export const connection = new DataSource({
   password: "postgres",
   logging: true,
   synchronize: true,
+  migrations: [path.join(__dirname, "./migrations/*")],
   entities: [Post, User],
 });
 
 const main = async () => {
   await connection.connect();
+
+  await connection.runMigrations();
 
   const app = express();
 
