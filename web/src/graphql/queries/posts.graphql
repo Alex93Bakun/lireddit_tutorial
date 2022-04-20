@@ -6,7 +6,13 @@ query Posts($limit: Int!, $cursor: String) {
       title
       textSnippet
       points
-      creatorId
+      creator {
+        id
+        username
+        email
+        createdAt
+        updatedAt
+      }
       createdAt
       updatedAt
     }
