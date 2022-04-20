@@ -20,6 +20,9 @@ const UpdootSection: React.FC<IUpdootSectionProps> = ({ post }) => {
             color="green.500"
             _hover={{ cursor: "pointer" }}
             onClick={async () => {
+              if (post.voteStatus === 1) {
+                return;
+              }
               await vote({
                 postId: post.id,
                 value: 1,
@@ -27,7 +30,17 @@ const UpdootSection: React.FC<IUpdootSectionProps> = ({ post }) => {
             }}
           />
         </Box>
-        <Box>{post.points}</Box>
+        <Box
+          color={
+            post.voteStatus === 1
+              ? "green.500"
+              : post.voteStatus === -1
+              ? "red.500"
+              : undefined
+          }
+        >
+          {post.points}
+        </Box>
         <Box>
           <ChevronDownIcon
             h="24px"
@@ -35,6 +48,9 @@ const UpdootSection: React.FC<IUpdootSectionProps> = ({ post }) => {
             color="red.500"
             _hover={{ cursor: "pointer" }}
             onClick={async () => {
+              if (post.voteStatus === -1) {
+                return;
+              }
               await vote({
                 postId: post.id,
                 value: -1,
