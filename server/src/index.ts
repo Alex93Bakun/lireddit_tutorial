@@ -25,7 +25,7 @@ export const connection = new DataSource({
   password: "postgres",
   logging: true,
   synchronize: true,
-  migrations: [path.join(__dirname, "./migrations/*")],
+  migrations: [path.join(__dirname, 'src/migrations/*.{ts,js}')],
   entities: [Post, User],
 });
 
