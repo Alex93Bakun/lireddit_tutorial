@@ -7,16 +7,17 @@ import cors from "cors";
 import express from "express";
 import session from "express-session";
 import Redis from "ioredis";
+import path from "path";
 import { buildSchema } from "type-graphql";
 import { DataSource } from "typeorm";
 
 import { __prod__, COOKIE_NAME } from "./constants";
 import { Post } from "./entities/Post";
+import { Updoot } from "./entities/Updoot";
 import { User } from "./entities/User";
 import { HelloResolver } from "./resolvers/hello";
 import { PostResolver } from "./resolvers/post";
 import { UserResolver } from "./resolvers/user";
-import path from "path";
 
 export const connection = new DataSource({
   type: "postgres",
@@ -25,8 +26,8 @@ export const connection = new DataSource({
   password: "postgres",
   logging: true,
   synchronize: true,
-  migrations: [path.join(__dirname, 'src/migrations/*.{ts,js}')],
-  entities: [Post, User],
+  migrations: [path.join(__dirname, "src/migrations/*.{ts,js}")],
+  entities: [Post, User, Updoot],
 });
 
 const main = async () => {
