@@ -10,17 +10,13 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 
 import { createUrqlClient } from "../utils/createUrqlClient";
-import {
-  useDeletePostMutation,
-  useMeQuery,
-  usePostsQuery,
-} from "../generated/graphql";
+import { useMeQuery, usePostsQuery } from "../generated/graphql";
 
 import Layout from "../components/Layout";
 import UpdootSection from "../components/UpdootSection";
+import EditDeletePostButtons from "../components/EditDeletePostButtons";
 
 const Index = () => {
   const [variables, setVariables] = useState({
@@ -30,7 +26,7 @@ const Index = () => {
   const [{ data, fetching }] = usePostsQuery({
     variables,
   });
-  const [, deletePost] = useDeletePostMutation();
+
   const [{ data: meData }] = useMeQuery();
 
   if (!fetching && !data) {
@@ -63,32 +59,7 @@ const Index = () => {
                   <Text mt={4}>{post.textSnippet}</Text>
                 </Box>
                 {meData?.me?.id === post.creator.id && (
-                  <Flex
-                    flex={1}
-                    flexDirection="column"
-                    rowGap="10px"
-                    justifyContent="flex-start"
-                    alignItems="end"
-                  >
-                    <Link href="/post/edit/[id]" as={`/post/edit/${post.id}`}>
-                      <ChakraLink>
-                        <EditIcon
-                          h="16px"
-                          w="16px"
-                          _hover={{ cursor: "pointer" }}
-                        />
-                      </ChakraLink>
-                    </Link>
-                    <DeleteIcon
-                      h="16px"
-                      w="16px"
-                      color="red.500"
-                      _hover={{ cursor: "pointer" }}
-                      onClick={async () => {
-                        await deletePost({ id: post.id });
-                      }}
-                    />
-                  </Flex>
+                  <EditDeletePostButtons post={post} />
                 )}
               </Flex>
             )
