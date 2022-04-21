@@ -1,5 +1,11 @@
 import React from "react";
-import { Box, Button, Flex, Link as ChakraLink } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  Link as ChakraLink,
+} from "@chakra-ui/react";
 import Link from "next/link";
 import { useLogoutMutation, useMeQuery } from "../generated/graphql";
 import { isServer } from "../utils/isServer";
@@ -27,7 +33,9 @@ const NavBar: React.FC<INavBarProps> = ({}) => {
           </ChakraLink>
         </Link>
         <Link href="/register">
-          <ChakraLink color="white" fontSize="1.2rem">register</ChakraLink>
+          <ChakraLink color="white" fontSize="1.2rem">
+            register
+          </ChakraLink>
         </Link>
       </>
     );
@@ -36,6 +44,20 @@ const NavBar: React.FC<INavBarProps> = ({}) => {
   } else {
     body = (
       <Flex mr="1.5rem">
+        <Link href="/create-post">
+          <ChakraLink
+            color="#E2E8F0"
+            fontSize="1rem"
+            fontWeight="600"
+            lineHeight={1.5}
+            display="inline-flex"
+            alignItems="center"
+            flexDir="row"
+            mr={2}
+          >
+            create post
+          </ChakraLink>
+        </Link>
         <Box color="white" fontSize="1.2rem" flexDir="row" mr={2}>
           {data.me.username}
         </Box>
@@ -62,7 +84,14 @@ const NavBar: React.FC<INavBarProps> = ({}) => {
       top={0}
       zIndex={10}
     >
-      <Box ml="auto" mr={4}>{body}</Box>
+      <Link href="/">
+        <ChakraLink>
+          <Heading ml={8}>LiReddit</Heading>
+        </ChakraLink>
+      </Link>
+      <Box ml="auto" mr={4}>
+        {body}
+      </Box>
     </Flex>
   );
 };
