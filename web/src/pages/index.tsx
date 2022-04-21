@@ -10,10 +10,14 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { DeleteIcon } from "@chakra-ui/icons";
+import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 
 import { createUrqlClient } from "../utils/createUrqlClient";
-import { useDeletePostMutation, usePostsQuery } from "../generated/graphql";
+import {
+  useDeletePostMutation,
+  useMeQuery,
+  usePostsQuery,
+} from "../generated/graphql";
 
 import Layout from "../components/Layout";
 import UpdootSection from "../components/UpdootSection";
@@ -27,6 +31,7 @@ const Index = () => {
     variables,
   });
   const [, deletePost] = useDeletePostMutation();
+  const [{ data: meData }] = useMeQuery();
 
   if (!fetching && !data) {
     return <div>you got query failed for some reason</div>;
@@ -38,37 +43,56 @@ const Index = () => {
         <div>loading...</div>
       ) : (
         <Stack spacing={8}>
-          {data!.posts.posts.map((post) => (
-            <Flex
-              key={post.id}
-              p={5}
-              shadow="md"
-              borderWidth="1px"
-              columnGap="20px"
-            >
-              <UpdootSection post={post} />
-              <Box>
-                <Link href="/post/[id]" as={`/post/${post.id}`}>
-                  <ChakraLink>
-                    <Heading fontSize="xl">{post.title}</Heading>
-                  </ChakraLink>
-                </Link>
-                <Text>posted by {post.creator.username}</Text>
-                <Text mt={4}>{post.textSnippet}</Text>
-              </Box>
-              <Flex flex={1} justifyContent="end">
-                <DeleteIcon
-                  h="16px"
-                  w="16px"
-                  color="red.500"
-                  _hover={{ cursor: "pointer" }}
-                  onClick={async () => {
-                    await deletePost({ id: post.id });
-                  }}
-                />
+          {data!.posts.posts.map((post) =>
+            !post ? null : (
+              <Flex
+                key={post.id}
+                p={5}
+                shadow="md"
+                borderWidth="1px"
+                columnGap="20px"
+              >
+                <UpdootSection post={post} />
+                <Box>
+                  <Link href="/post/[id]" as={`/post/${post.id}`}>
+                    <ChakraLink>
+                      <Heading fontSize="xl">{post.title}</Heading>
+                    </ChakraLink>
+                  </Link>
+                  <Text>posted by {post.creator.username}</Text>
+                  <Text mt={4}>{post.textSnippet}</Text>
+                </Box>
+                {meData?.me?.id === post.creator.id && (
+                  <Flex
+                    flex={1}
+                    flexDirection="column"
+                    rowGap="10px"
+                    justifyContent="flex-start"
+                    alignItems="end"
+                  >
+                    <Link href="/post/edit/[id]" as={`/post/edit/${post.id}`}>
+                      <ChakraLink>
+                        <EditIcon
+                          h="16px"
+                          w="16px"
+                          _hover={{ cursor: "pointer" }}
+                        />
+                      </ChakraLink>
+                    </Link>
+                    <DeleteIcon
+                      h="16px"
+                      w="16px"
+                      color="red.500"
+                      _hover={{ cursor: "pointer" }}
+                      onClick={async () => {
+                        await deletePost({ id: post.id });
+                      }}
+                    />
+                  </Flex>
+                )}
               </Flex>
-            </Flex>
-          ))}
+            )
+          )}
         </Stack>
       )}
       {data && data.posts.hasMore ? (
