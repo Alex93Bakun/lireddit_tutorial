@@ -10,9 +10,10 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
+import { DeleteIcon } from "@chakra-ui/icons";
 
 import { createUrqlClient } from "../utils/createUrqlClient";
-import { usePostsQuery } from "../generated/graphql";
+import { useDeletePostMutation, usePostsQuery } from "../generated/graphql";
 
 import Layout from "../components/Layout";
 import UpdootSection from "../components/UpdootSection";
@@ -25,8 +26,7 @@ const Index = () => {
   const [{ data, fetching }] = usePostsQuery({
     variables,
   });
-
-  console.log(data);
+  const [, deletePost] = useDeletePostMutation();
 
   if (!fetching && !data) {
     return <div>you got query failed for some reason</div>;
@@ -56,6 +56,17 @@ const Index = () => {
                 <Text>posted by {post.creator.username}</Text>
                 <Text mt={4}>{post.textSnippet}</Text>
               </Box>
+              <Flex flex={1} justifyContent="end">
+                <DeleteIcon
+                  h="16px"
+                  w="16px"
+                  color="red.500"
+                  _hover={{ cursor: "pointer" }}
+                  onClick={async () => {
+                    await deletePost({ id: post.id });
+                  }}
+                />
+              </Flex>
             </Flex>
           ))}
         </Stack>
