@@ -1,4 +1,3 @@
-import { betterUpdateQuery } from "./betterUpdateQuery";
 import { cacheExchange, Resolver } from "@urql/exchange-graphcache";
 import {
   dedupExchange,
@@ -6,6 +5,7 @@ import {
   fetchExchange,
   stringifyVariables,
 } from "urql";
+import { pipe, tap } from "wonka";
 import {
   LoginMutation,
   LogoutMutation,
@@ -14,8 +14,8 @@ import {
   RegisterMutation,
   VoteMutationVariables,
 } from "../generated/graphql";
+import { betterUpdateQuery } from "./betterUpdateQuery";
 import Router from "next/router";
-import { pipe, tap } from "wonka";
 import gql from "graphql-tag";
 import { isServer } from "./isServer";
 
@@ -71,7 +71,7 @@ const cursorPagination = (): Resolver => {
 export const createUrqlClient = (ssrExchange: any, ctx: any) => {
   let cookie = "";
   if (isServer()) {
-    cookie = ctx.req.headers.cookie;
+    cookie = ctx?.req?.headers?.cookie;
   }
 
   return {
@@ -97,7 +97,7 @@ export const createUrqlClient = (ssrExchange: any, ctx: any) => {
         },
         updates: {
           Mutation: {
-            vote: (_result, args, cache) => {
+            vote: (_result, args, cache, info) => {
               const { postId, value } = args as VoteMutationVariables;
               const data = cache.readFragment(
                 gql`

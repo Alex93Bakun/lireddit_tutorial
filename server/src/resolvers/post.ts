@@ -168,8 +168,8 @@ export class PostResolver {
   }
 
   @Query(() => Post, { nullable: true })
-  post(@Arg("id") id: number): Promise<Post | null> {
-    return Post.findOneBy({ id });
+  post(@Arg("id", () => Int) id: number): Promise<Post | null> {
+    return Post.findOne({ where: { id }, relations: ["creator"] });
   }
 
   @Mutation(() => Post)

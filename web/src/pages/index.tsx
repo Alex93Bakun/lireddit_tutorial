@@ -55,7 +55,11 @@ const Index = () => {
             >
               <UpdootSection post={post} />
               <Box>
-                <Heading fontSize="xl">{post.title}</Heading>{" "}
+                <Link href="/post/[id]" as={`/post/${post.id}`}>
+                  <ChakraLink>
+                    <Heading fontSize="xl">{post.title}</Heading>
+                  </ChakraLink>
+                </Link>
                 <Text>posted by {post.creator.username}</Text>
                 <Text mt={4}>{post.textSnippet}</Text>
               </Box>
