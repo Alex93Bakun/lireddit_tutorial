@@ -150,17 +150,6 @@ export class PostResolver {
       replacements
     );
 
-    // const qb = await connection
-    //   .getRepository(Post)
-    //   .createQueryBuilder("post")
-    //   .orderBy('"createdAt"', "DESC")
-    //   .take(realLimitPlusOne);
-    // if (cursor) {
-    //   qb.where('"createdAt" < :cursor', { cursor: new Date(parseInt(cursor)) });
-    // }
-    //
-    // const posts = await qb.getMany();
-
     return {
       posts: posts.slice(0, realLimit),
       hasMore: posts.length === realLimitPlusOne,
